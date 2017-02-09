@@ -6,7 +6,7 @@ function Binary:updateOutput(input)
         self.output:sign()
         return self.output
     else
-        return self.input:sign()
+        return input:sign()
     end
 end
 

@@ -9,7 +9,6 @@
 #include "THCDeviceTensor.cuh"
 
 #include <iostream>
-#include <chrono>
 
 #define BLOCK_SIZE 16
 
@@ -274,22 +273,11 @@ void encode_cols(THCState *state, THCudaTensor* input, THCudaIntTensor* output) 
 	  dim3 blockDim(32, 32, 1);
       dim3 gridDim(k/32, n/32, 1);
 	  
-	  	  std::chrono::duration<double> total(0);
-			
-			//for (int i=0;i<100;i++){
-            auto start = std::chrono::high_resolution_clock::now();
 
       encode_cols_kernel <<< gridDim,blockDim, 0, THCState_getCurrentStream(state) >>>(
             THCudaTensor_data(state, input),
             (unsigned int*)THCudaIntTensor_data(state, output),
             n, k);
-    	cudaDeviceSynchronize();
-			
-	 auto end = std::chrono::high_resolution_clock::now();
-			total += end -start;
-			//}
-            std::chrono::duration<double> diff = total;
-            std::cout << "GEMM kernel time: " << diff.count() << " s\n"; 
 }
 
 __forceinline__ __device__ void decode_val(unsigned int input, float* output) {

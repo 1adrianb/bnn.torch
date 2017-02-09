@@ -20,23 +20,6 @@ function BinarySpatialConvolution:__init(nInputPlane, nOutputPlane, kW, kH, dW, 
    self.alphas = torch.Tensor(nOutputPlane)
 
    self.finput = self.finput or self.alphas.new() 
-
-   self:reset()
-end
-
-function BinarySpatialConvolution:reset(stdv)
-   if stdv then
-      stdv = stdv * math.sqrt(3)
-   else
-      stdv = 1/math.sqrt(self.kW*self.kH*self.nInputPlane)
-   end
-   if nn.oldSeed then
-      self.weight:apply(function()
-         return torch.uniform(-stdv, stdv)
-      end)
-   else
-      self.weight:uniform(-stdv, stdv)
-   end 
 end
 
 function BinarySpatialConvolution:updateOutput(input)
@@ -57,6 +40,10 @@ function BinarySpatialConvolution:updateOutput(input)
    )
 
   return self.output
+end
+
+function BinarySpatialConvolution:noBias()
+    return self
 end
 
 -- Helper function fo convert real weights to their binary form
