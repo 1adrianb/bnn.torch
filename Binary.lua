@@ -12,7 +12,7 @@ end
 
 function Binary:updateGradInput(input,gradOutput)
     self.gradInput:resizeAs(gradOutput):copy(gradOutput)
-    self.gradInput[input:ge(-1)] = 0
+    self.gradInput[input:ge(1)] = 0
     self.gradInput[input:le(-1)] = 0
     return self.gradInput
 end
